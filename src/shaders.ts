@@ -1,7 +1,7 @@
 export const Shaders = () => {
     const vertex = `
         [[block]] struct Uniforms {
-            [[offset(0)]] mvpMatrix : mat4x4<f32>;
+            mvpMatrix : mat4x4<f32>;
         };
         [[binding(0), group(0)]] var<uniform> uniforms : Uniforms;
         
