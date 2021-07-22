@@ -96,6 +96,32 @@ export const InitGPU = async () => {
     const canvas = document.getElementById('canvas-webgpu') as HTMLCanvasElement;
     const adapter = await navigator.gpu?.requestAdapter();
     const device = await adapter?.requestDevice() as GPUDevice;
+    const context = canvas.getContext('webgpu') as unknown as GPUPresentationContext;
+
+    const devicePixelRatio = window.devicePixelRatio || 1;
+    const size = [
+        canvas.clientWidth * devicePixelRatio,
+        canvas.clientHeight * devicePixelRatio,
+    ];
+    const format = context.getPreferredFormat(adapter!);
+
+    context.configure({
+        device: device,
+        format: format,
+        size: size
+    });
+    return{ device, canvas, format, context };
+};
+
+/*export const InitGPU = async () => {
+    const checkgpu = CheckWebGPU();
+    if(checkgpu.includes('Your current browser does not support WebGPU!')){
+        console.log(checkgpu);
+        throw('Your current browser does not support WebGPU!');
+    }
+    const canvas = document.getElementById('canvas-webgpu') as HTMLCanvasElement;
+    const adapter = await navigator.gpu?.requestAdapter();
+    const device = await adapter?.requestDevice() as GPUDevice;
     const context = canvas.getContext('gpupresent') as unknown as GPUCanvasContext;
     const swapChainFormat = 'bgra8unorm';
     const swapChain = context.configureSwapChain({
@@ -103,7 +129,7 @@ export const InitGPU = async () => {
         format: swapChainFormat
     });
     return{device, canvas, swapChainFormat, swapChain };
-};
+};*/
 
 export const CheckWebGPU = () => {
     let result = 'Great, your current browser supports WebGPU!';

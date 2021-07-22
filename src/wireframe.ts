@@ -36,7 +36,7 @@ export const CreateWireframe = async (wireframeData: Float32Array, isAnimation =
             entryPoint: "main",
             targets: [
                 {
-                    format: gpu.swapChainFormat as GPUTextureFormat
+                    format: gpu.format
                 }
             ]
         },
@@ -75,7 +75,7 @@ export const CreateWireframe = async (wireframeData: Float32Array, isAnimation =
         }]
     });
 
-    let textureView = gpu.swapChain.getCurrentTexture().createView();
+    let textureView = gpu.context.getCurrentTexture().createView();
     const renderPassDescription = {
         colorAttachments: [{
             view: textureView,
@@ -97,7 +97,7 @@ export const CreateWireframe = async (wireframeData: Float32Array, isAnimation =
         mat4.multiply(mvpMatrix, vpMatrix, modelMatrix);
         device.queue.writeBuffer(uniformBuffer, 0, mvpMatrix as ArrayBuffer);
 
-        textureView = gpu.swapChain.getCurrentTexture().createView();
+        textureView = gpu.context.getCurrentTexture().createView();
         renderPassDescription.colorAttachments[0].view = textureView;
         const commandEncoder = device.createCommandEncoder();
         const renderPass = commandEncoder.beginRenderPass(renderPassDescription as GPURenderPassDescriptor);
