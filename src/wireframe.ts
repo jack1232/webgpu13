@@ -4,6 +4,7 @@ import { vec3, mat4 } from 'gl-matrix';
 const createCamera = require('3d-view-controls');
 
 export const CreateWireframe = async (wireframeData: Float32Array, isAnimation = true) => {
+
     const gpu = await InitGPU();
     const device = gpu.device;
 
@@ -13,6 +14,7 @@ export const CreateWireframe = async (wireframeData: Float32Array, isAnimation =
  
     const shader = Shaders();
     const pipeline = device.createRenderPipeline({
+        layout:'auto',
         vertex: {
             module: device.createShaderModule({                    
                 code: shader.vertex
@@ -79,7 +81,8 @@ export const CreateWireframe = async (wireframeData: Float32Array, isAnimation =
     const renderPassDescription = {
         colorAttachments: [{
             view: textureView,
-            loadValue: { r: 0.2, g: 0.247, b: 0.314, a: 1.0 }, //background color
+            clearValue: { r: 0.2, g: 0.247, b: 0.314, a: 1.0 }, //background color
+            loadOp:'clear',
             storeOp: 'store'
         }]
     };
@@ -106,7 +109,7 @@ export const CreateWireframe = async (wireframeData: Float32Array, isAnimation =
         renderPass.setVertexBuffer(0, vertexBuffer);
         renderPass.setBindGroup(0, uniformBindGroup);       
         renderPass.draw(numberOfVertices);
-        renderPass.endPass();
+        renderPass.end();
 
         device.queue.submit([commandEncoder.finish()]);
     }
